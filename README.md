@@ -1,99 +1,70 @@
-<p align="center">
-  <a href="http://nestjs.com/" target="blank"><img src="https://nestjs.com/img/logo-small.svg" width="120" alt="Nest Logo" /></a>
-</p>
+🚀 Calculadora de Frete com Design Pattern Strategy
+📝 Descrição
+Este projeto implementa uma calculadora de frete utilizando o Design Pattern Strategy em uma aplicação NestJS. O padrão Strategy permite encapsular diferentes algoritmos de cálculo de frete e torná-los intercambiáveis.
 
-[circleci-image]: https://img.shields.io/circleci/build/github/nestjs/nest/master?token=abc123def456
-[circleci-url]: https://circleci.com/gh/nestjs/nest
+🎯 Objetivo do Pattern Strategy
+O padrão Strategy é utilizado quando:
 
-  <p align="center">A progressive <a href="http://nodejs.org" target="_blank">Node.js</a> framework for building efficient and scalable server-side applications.</p>
-    <p align="center">
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/v/@nestjs/core.svg" alt="NPM Version" /></a>
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/l/@nestjs/core.svg" alt="Package License" /></a>
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/dm/@nestjs/common.svg" alt="NPM Downloads" /></a>
-<a href="https://circleci.com/gh/nestjs/nest" target="_blank"><img src="https://img.shields.io/circleci/build/github/nestjs/nest/master" alt="CircleCI" /></a>
-<a href="https://coveralls.io/github/nestjs/nest?branch=master" target="_blank"><img src="https://coveralls.io/repos/github/nestjs/nest/badge.svg?branch=master#9" alt="Coverage" /></a>
-<a href="https://discord.gg/G7Qnnhy" target="_blank"><img src="https://img.shields.io/badge/discord-online-brightgreen.svg" alt="Discord"/></a>
-<a href="https://opencollective.com/nest#backer" target="_blank"><img src="https://opencollective.com/nest/backers/badge.svg" alt="Backers on Open Collective" /></a>
-<a href="https://opencollective.com/nest#sponsor" target="_blank"><img src="https://opencollective.com/nest/sponsors/badge.svg" alt="Sponsors on Open Collective" /></a>
-  <a href="https://paypal.me/kamilmysliwiec" target="_blank"><img src="https://img.shields.io/badge/Donate-PayPal-ff3f59.svg" alt="Donate us"/></a>
-    <a href="https://opencollective.com/nest#sponsor"  target="_blank"><img src="https://img.shields.io/badge/Support%20us-Open%20Collective-41B883.svg" alt="Support us"></a>
-  <a href="https://twitter.com/nestframework" target="_blank"><img src="https://img.shields.io/twitter/follow/nestframework.svg?style=social&label=Follow" alt="Follow us on Twitter"></a>
-</p>
-  <!--[![Backers on Open Collective](https://opencollective.com/nest/backers/badge.svg)](https://opencollective.com/nest#backer)
-  [![Sponsors on Open Collective](https://opencollective.com/nest/sponsors/badge.svg)](https://opencollective.com/nest#sponsor)-->
+Precisamos usar diferentes variantes de um algoritmo
+Queremos isolar a lógica do algoritmo dos detalhes de implementação
+Temos um conjunto de algoritmos similares que precisam ser alternados
+🏗️ Estrutura do Projeto
+Interface Strategy
+typescript
 
-## Description
+interface ShippingStrategy {    calculate(weight: number, distance:     number): number;}
+Implementações Concretas
+Temos três estratégias de cálculo de frete:
 
-[Nest](https://github.com/nestjs/nest) framework TypeScript starter repository.
+SedexStrategy: Opção premium
 
-## Project setup
+Taxa base: R$20
+Taxa por kg: R$3
+Taxa por km: R$0.8
+PacStrategy: Opção econômica
 
-```bash
-$ yarn install
-```
+Taxa base: R$15
+Taxa por kg: R$1
+Taxa por km: R$0.3
+TransportadoraStrategy: Opção intermediária
 
-## Compile and run the project
+Taxa base: R$10
+Taxa por kg: R$2
+Taxa por km: R$0.5
+Controller
+O controller recebe as requisições e seleciona a estratégia apropriada:
 
-```bash
-# development
-$ yarn run start
+typescript
 
-# watch mode
-$ yarn run start:dev
+@Post()calculateFreight(@Body() request: RequestType): number {    const { ShippimentType, weight,     distance } = request;    switch (ShippimentType) {        case 'SEDEX':            this.            calculateFreightService.            SetShippingType(new             SedexStrategy);            break;        case 'PAC':            this.            calculateFreightService.            SetShippingType(new             PacStrategy);            break;        case 'Transportadora':            this.            calculateFreightService.            SetShippingType(new             TransportadoraStrategy);            break;        default:            throw new             BadRequestException            ('Invalid ShippimentType');    }    return this.calculateFreightService.    calculate(weight, distance);}
+🚀 Como Usar
+Para calcular o frete, faça uma requisição POST para /freight-calculator com o seguinte corpo:
 
-# production mode
-$ yarn run start:prod
-```
+json
 
-## Run tests
-
-```bash
-# unit tests
-$ yarn run test
-
-# e2e tests
-$ yarn run test:e2e
-
-# test coverage
-$ yarn run test:cov
-```
-
-## Deployment
-
-When you're ready to deploy your NestJS application to production, there are some key steps you can take to ensure it runs as efficiently as possible. Check out the [deployment documentation](https://docs.nestjs.com/deployment) for more information.
-
-If you are looking for a cloud-based platform to deploy your NestJS application, check out [Mau](https://mau.nestjs.com), our official platform for deploying NestJS applications on AWS. Mau makes deployment straightforward and fast, requiring just a few simple steps:
-
-```bash
-$ yarn install -g mau
-$ mau deploy
-```
-
-With Mau, you can deploy your application in just a few clicks, allowing you to focus on building features rather than managing infrastructure.
-
-## Resources
-
-Check out a few resources that may come in handy when working with NestJS:
-
-- Visit the [NestJS Documentation](https://docs.nestjs.com) to learn more about the framework.
-- For questions and support, please visit our [Discord channel](https://discord.gg/G7Qnnhy).
-- To dive deeper and get more hands-on experience, check out our official video [courses](https://courses.nestjs.com/).
-- Deploy your application to AWS with the help of [NestJS Mau](https://mau.nestjs.com) in just a few clicks.
-- Visualize your application graph and interact with the NestJS application in real-time using [NestJS Devtools](https://devtools.nestjs.com).
-- Need help with your project (part-time to full-time)? Check out our official [enterprise support](https://enterprise.nestjs.com).
-- To stay in the loop and get updates, follow us on [X](https://x.com/nestframework) and [LinkedIn](https://linkedin.com/company/nestjs).
-- Looking for a job, or have a job to offer? Check out our official [Jobs board](https://jobs.nestjs.com).
-
-## Support
-
-Nest is an MIT-licensed open source project. It can grow thanks to the sponsors and support by the amazing backers. If you'd like to join them, please [read more here](https://docs.nestjs.com/support).
-
-## Stay in touch
-
-- Author - [Kamil Myśliwiec](https://twitter.com/kammysliwiec)
-- Website - [https://nestjs.com](https://nestjs.com/)
-- Twitter - [@nestframework](https://twitter.com/nestframework)
-
-## License
-
-Nest is [MIT licensed](https://github.com/nestjs/nest/blob/master/LICENSE).
+{    "ShippimentType": "SEDEX",    "weight": 10,    "distance": 100}
+💡 Benefícios da Implementação
+Flexibilidade: Fácil adicionar novos tipos de cálculo de frete
+Manutenibilidade: Cada estratégia é isolada em sua própria classe
+Princípio Open/Closed: Podemos adicionar novos tipos de frete sem modificar o código existente
+Princípio Single Responsibility: Cada classe tem uma única responsabilidade
+🔄 Fluxo de Execução
+Cliente faz requisição POST com tipo de frete, peso e distância
+Controller recebe a requisição e identifica a estratégia apropriada
+Service é configurado com a estratégia escolhida
+Cálculo é executado usando a estratégia selecionada
+Resultado é retornado ao cliente
+🛠️ Tecnologias Utilizadas
+NestJS
+TypeScript
+Design Pattern Strategy
+🚀 Como Executar o Projeto
+bash
+Run
+# Instalar dependências$ yarn install# Executar em desenvolvimento$ yarn run start:dev# Executar em produção$ yarn run start:prod
+📚 Princípios SOLID Aplicados
+Single Responsibility: Cada estratégia tem uma única responsabilidade
+Open/Closed: Extensível para novos tipos de frete sem modificar código existente
+Liskov Substitution: Todas as estratégias podem ser usadas de forma intercambiável
+Interface Segregation: Interface enxuta e específica para o cálculo
+Dependency Inversion: Dependência de abstrações, não implementações concretas
