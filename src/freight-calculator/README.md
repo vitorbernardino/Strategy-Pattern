@@ -26,7 +26,7 @@ Define um contrato comum para todas as estratégias de cálculo:
 export interface ShippingStrategy {
   calculate(weight: number, distance: number): number;
 }
-
+```
 Estratégias Concretas
 Cada tipo de frete implementa sua própria lógica de cálculo:
 
@@ -38,7 +38,7 @@ TransportadoraStrategy: Opção intermediária.
 
 Serviço de Cálculo
 Classe responsável por delegar o cálculo para a estratégia selecionada:
-
+```typescript
 export class FreightCalculatorService {
   private shippingType: ShippingStrategy;
 
@@ -50,6 +50,7 @@ export class FreightCalculatorService {
     return this.shippingType.calculate(weight, distance);
   }
 }
+```
 🚀 Como Executar
 Escolha a estratégia de frete desejada (SEDEX, PAC, TRANSPORTADORA).
 
@@ -90,8 +91,6 @@ Design Pattern Strategy
 Padrões de Projeto - Strategy
 
 
-
-Se quiser, posso adaptar esse conteúdo para refletir a estrutura real do seu projeto (ex: com diretórios, comandos para rodar o app etc.). Deseja isso também?
 
 
 
