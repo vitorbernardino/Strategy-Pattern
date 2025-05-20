@@ -14,7 +14,6 @@ O Strategy Pattern é um padrão de design comportamental que permite definir m�
 ## 🏗️ Estrutura do Projeto
 
 ### Interface da Estratégia
-
 Define o contrato comum que todas as transportadoras devem seguir:
 
 ```typescript
@@ -22,7 +21,7 @@ export interface ShippingStrategy {
   calculate(weight: number, distance: number): number;
 }
 ```
-Estratégias Concretas
+### Estratégias Concretas
 Cada tipo de frete implementa sua própria lógica de cálculo:
 ```typescript
 export class SedexStrategy implements ShippingStrategy {
@@ -35,7 +34,7 @@ export class SedexStrategy implements ShippingStrategy {
 }
 ```
 
-Serviço de Cálculo
+### Serviço de Cálculo
 Esta classe é responsável por usar a estratégia selecionada para calcular o valor do frete:
 ```typescript
 export class FreightCalculatorService {
@@ -52,7 +51,7 @@ export class FreightCalculatorService {
 ```
 Ela não sabe qual transportadora está sendo usada, apenas delega o cálculo à estratégia injetada.
 <br>
-Controller
+### Controller
 A controller recebe o tipo de envio via requisição e seleciona dinamicamente a estratégia correta:
 ```typescript
 @Post()
@@ -78,14 +77,14 @@ calculateFreight(@Body() request: RequestType): number {
 
 ```
 
-✅ Vantagens dessa abordagem
+## ✅ Vantagens dessa abordagem
 
 Flexível: novas transportadoras podem ser adicionadas sem alterar a lógica existente.
-
+<br>
 Desacoplado: separa regras de negócio da lógica de cálculo.
-
+<br>
 Testável: cada estratégia pode ser testada isoladamente.
-
+<br>
 Extensível: aberto para novas funcionalidades sem alterar código já funcional (princípio aberto/fechado).
 
 
