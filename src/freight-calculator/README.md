@@ -2,17 +2,12 @@
 
 ## 📌 Descrição
 
-Este projeto é uma demonstração prática da aplicação do **Design Pattern Strategy** em um sistema simples de cálculo de frete. A ideia central é mostrar como diferentes algoritmos de cálculo (ex: Sedex, PAC, Transportadora) podem ser encapsulados e utilizados de forma flexível e intercambiável.
+Este projeto implementa um sistema de cálculo de frete utilizando o padrão de projeto Strategy, com o objetivo de facilitar a adição de novos tipos de transportadoras e manter o código limpo, flexível e escalável.
 
 ---
 
-## 🎯 Objetivo
-
-O objetivo do projeto é ilustrar como o padrão **Strategy** pode ser utilizado para:
-
-- Substituir estruturas condicionais (como `if/else` ou `switch`) por estratégias mais elegantes.
-- Tornar o sistema aberto para extensão, mas fechado para modificação (Princípio Open/Closed).
-- Facilitar a manutenção e evolução do código.
+## 🧠 O que é o Strategy Pattern?
+O Strategy Pattern é um padrão de design comportamental que permite definir múltiplos algoritmos intercambiáveis, encapsulados em classes distintas, que seguem uma mesma interface. Isso permite que a lógica de um algoritmo (neste caso, o cálculo de frete) possa ser alterada em tempo de execução sem mudar o funcionamento do sistema..
 
 ---
 
@@ -20,7 +15,7 @@ O objetivo do projeto é ilustrar como o padrão **Strategy** pode ser utilizado
 
 ### Interface da Estratégia
 
-Define um contrato comum para todas as estratégias de cálculo:
+Define o contrato comum que todas as transportadoras devem seguir:
 
 ```typescript
 export interface ShippingStrategy {
@@ -29,20 +24,24 @@ export interface ShippingStrategy {
 ```
 Estratégias Concretas
 Cada tipo de frete implementa sua própria lógica de cálculo:
-
-SedexStrategy: Mais rápido e mais caro.
-
-PacStrategy: Econômico.
-
-TransportadoraStrategy: Opção intermediária.
+```typescript
+export class SedexStrategy implements ShippingStrategy {
+  calculate(weight: number, distance: number): number {
+    const baseFee = 20;
+    const weightFee = weight * 3;
+    const distanceFee = distance * 0.8;
+    return baseFee + weightFee + distanceFee;
+  }
+}
+```
 
 Serviço de Cálculo
-Classe responsável por delegar o cálculo para a estratégia selecionada:
+Esta classe é responsável por usar a estratégia selecionada para calcular o valor do frete:
 ```typescript
 export class FreightCalculatorService {
   private shippingType: ShippingStrategy;
 
-  public setShippingType(shippingType: ShippingStrategy): void {
+  public SetShippingType(shippingType: ShippingStrategy): void {
     this.shippingType = shippingType;
   }
 
@@ -51,44 +50,43 @@ export class FreightCalculatorService {
   }
 }
 ```
-🚀 Como Executar
-Escolha a estratégia de frete desejada (SEDEX, PAC, TRANSPORTADORA).
+Ela não sabe qual transportadora está sendo usada, apenas delega o cálculo à estratégia injetada.
+<br>
+Controller
+A controller recebe o tipo de envio via requisição e seleciona dinamicamente a estratégia correta:
+```typescript
+@Post()
+calculateFreight(@Body() request: RequestType): number {
+  const { ShippimentType, weight, distance } = request;
 
-Defina o peso e a distância.
+  switch (ShippimentType) {
+    case 'SEDEX':
+      this.calculateFreightService.SetShippingType(new SedexStrategy());
+      break;
+    case 'PAC':
+      this.calculateFreightService.SetShippingType(new PacStrategy());
+      break;
+    case 'Transportadora':
+      this.calculateFreightService.SetShippingType(new TransportadoraStrategy());
+      break;
+    default:
+      throw new BadRequestException('Invalid ShippimentType');
+  }
 
-O sistema aplicará a lógica de cálculo correspondente e retornará o valor do frete.
-
-✅ Exemplo de Uso
-
-POST /freight-calculator
-
-{
-  "shippimentType": "SEDEX",
-  "weight": 5,
-  "distance": 200
+  return this.calculateFreightService.calculate(weight, distance);
 }
-Resposta esperada:
 
+```
 
-{
-  "total": 100.00
-}
-🔍 Aprendizados
-Separação clara de responsabilidades.
+✅ Vantagens dessa abordagem
 
-Facilidade para adicionar novos tipos de cálculo de frete.
+Flexível: novas transportadoras podem ser adicionadas sem alterar a lógica existente.
 
-Aplicação prática de princípios SOLID.
+Desacoplado: separa regras de negócio da lógica de cálculo.
 
-🛠️ Tecnologias
-Node.js / NestJS
+Testável: cada estratégia pode ser testada isoladamente.
 
-TypeScript
-
-Design Pattern Strategy
-
-📚 Referências
-Padrões de Projeto - Strategy
+Extensível: aberto para novas funcionalidades sem alterar código já funcional (princípio aberto/fechado).
 
 
 
